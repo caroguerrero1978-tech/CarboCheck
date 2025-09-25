@@ -65,6 +65,11 @@ CarboCheck/
 🔐 **Acceso administrador (web)**:
  👉 https://carbocheck.app/admin (con contraseña segura provista al administrador)
 
+### 🖥️ Acceso Local (Testing)
+- **Usuario**: `file:///Users/carolinaguerrero/CarboCheck/web/index.html`
+- **Admin**: `file:///Users/carolinaguerrero/CarboCheck/web/admin.html`
+- **Contraseña Admin**: `CarboCheck2025!`
+
 ## 📣 Slogan
 
 ✨ "Escanea, analiza y gestiona tu ingesta de carbohidratos fácilmente." ✨
