@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ing. Carolina Guerrero - AWS Girls Argentina</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+        }
+        
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        
+        .aws-badge {
+            background: linear-gradient(45deg, #FF9500, #FF6B35);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+        
+        .aws-badge:hover {
+            transform: translateY(-2px);
+        }
+        
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .contact-link {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .contact-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .instagram {
+            background: linear-gradient(45deg, #E4405F, #C13584, #833AB4);
+        }
+        
+        .github {
+            background: linear-gradient(45deg, #333, #24292e);
+        }
+        
+        .email {
+            background: linear-gradient(45deg, #4285F4, #34A853);
+        }
+        
+        .carbocheck {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .container {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-img">CG</div>
+        <h1>Ing. Carolina Guerrero</h1>
+        <p class="subtitle">Ingeniera & Tech Enthusiast</p>
+        
+        <a href="https://www.instagram.com/awsgirlsargentina/" class="aws-badge" target="_blank">
+            🚀 AWS Girls Argentina
+        </a>
+        
+        <div class="contact-links">
+            <a href="index.html" class="contact-link carbocheck">
+                🍎 CarboCheck App
+            </a>
+            <a href="https://www.instagram.com/awsgirlsargentina/" class="contact-link instagram" target="_blank">
+                📱 Instagram - AWS Girls Argentina
+            </a>
+            <a href="https://github.com/caroguerrero1978" class="contact-link github" target="_blank">
+                💻 GitHub Profile
+            </a>
+            <a href="mailto:caroguerrero1978@gmail.com" class="contact-link email">
+                ✉️ Contacto por Email
+            </a>
+        </div>
+    </div>
+</body>
+</html>

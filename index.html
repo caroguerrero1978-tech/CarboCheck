@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarboCheck - Control de Carbohidratos</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+</head>
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="screen active">
+            <div class="container">
+                <div class="logo">
+                    <h1>🍎 CarboCheck</h1>
+                    <p>Revoluciona el control de carbohidratos</p>
+                </div>
+                <form id="loginForm">
+                    <input type="email" id="email" placeholder="Email" required>
+                    <input type="password" id="password" placeholder="Contraseña" required>
+                    <button type="submit">Iniciar Sesión</button>
+                    <button type="button" id="registerBtn">Registrarse</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Register Screen -->
+        <div id="registerScreen" class="screen">
+            <div class="container">
+                <h2>Registro</h2>
+                <form id="registerForm">
+                    <input type="text" id="regName" placeholder="Nombre completo" required>
+                    <input type="email" id="regEmail" placeholder="Email" required>
+                    <input type="password" id="regPassword" placeholder="Contraseña" required>
+                    <select id="diabetesType" required>
+                        <option value="">Tipo de diabetes</option>
+                        <option value="tipo1">Tipo 1</option>
+                        <option value="tipo2">Tipo 2</option>
+                    </select>
+                    <button type="submit">Crear Cuenta</button>
+                    <button type="button" id="backToLogin">Volver</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main App Screen -->
+        <div id="mainScreen" class="screen">
+            <header>
+                <h1>CarboCheck</h1>
+                <button id="logoutBtn">Salir</button>
+            </header>
+            
+            <div class="main-content">
+                <div class="scan-section">
+                    <h2>Escanear Alimento</h2>
+                    <div class="camera-container">
+                        <video id="camera" autoplay playsinline></video>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                    </div>
+                    <div class="camera-controls">
+                        <button id="startCamera">📷 Activar Cámara</button>
+                        <button id="captureBtn" style="display: none;">Capturar</button>
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                        <button id="uploadBtn">📁 Subir Imagen</button>
+                    </div>
+                </div>
+
+                <div id="results" class="results-section" style="display: none;">
+                    <h3>Análisis Nutricional</h3>
+                    <div class="nutrition-info">
+                        <div class="nutrient">
+                            <span>Carbohidratos:</span>
+                            <span id="carbs">0g</span>
+                        </div>
+                        <div class="nutrient">
+                            <span>Azúcares:</span>
+                            <span id="sugars">0g</span>
+                        </div>
+                        <div class="nutrient">
+                            <span>Calorías:</span>
+                            <span id="calories">0</span>
+                        </div>
+                    </div>
+                    <div id="recommendations" class="recommendations"></div>
+                    <button id="saveFood">Guardar en Historial</button>
+                </div>
+
+                <div class="history-section">
+                    <h3>Historial de Hoy</h3>
+                    <div id="todayHistory" class="history-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="database.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
