@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarboCheck - Panel de Administrador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="admin-container">
+        <h1>CarboCheck - Panel de Administrador</h1>
+        
+        <div id="admin-login" class="form-container">
+            <h2>Acceso de Administrador</h2>
+            <form id="admin-login-form">
+                <input type="password" id="admin-password" placeholder="Contraseña de administrador" required>
+                <button type="submit" class="btn-primary">Acceder</button>
+            </form>
+            <p><a href="/">← Volver a CarboCheck</a></p>
+        </div>
+
+        <div id="admin-dashboard" style="display: none;">
+            <div class="admin-header">
+                <h2>Dashboard de Administrador</h2>
+                <button onclick="logout()" class="btn-logout">Cerrar Sesión</button>
+            </div>
+            
+            <div id="admin-stats" class="stats-grid">
+                <!-- Stats se cargan dinámicamente -->
+            </div>
+
+            <div class="admin-sections">
+                <div class="admin-section">
+                    <h3>Agregar Alimento</h3>
+                    <form id="add-food-form">
+                        <input type="text" id="food-name" placeholder="Nombre del alimento" required>
+                        <input type="number" id="food-carbs" placeholder="Carbohidratos (g/100g)" required>
+                        <input type="number" id="food-sugars" placeholder="Azúcares (g/100g)" required>
+                        <input type="number" id="food-gi" placeholder="Índice glucémico">
+                        <input type="number" id="food-calories" placeholder="Calorías (por 100g)">
+                        <input type="text" id="food-category" placeholder="Categoría">
+                        <button type="submit" class="btn-primary">Agregar Alimento</button>
+                    </form>
+                </div>
+
+                <div class="admin-section">
+                    <h3>Usuarios Recientes</h3>
+                    <div id="recent-users">
+                        <!-- Se carga dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = 'CarboCheck2025!Admin';
+        
+        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('admin-password').value;
+
+            if (password === ADMIN_PASSWORD) {
+                try {
+                    const response = await fetch('/api/admin/dashboard', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ password })
+                    });
+
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        document.getElementById('admin-login').style.display = 'none';
+                        document.getElementById('admin-dashboard').style.display = 'block';
+                        loadDashboard(data);
+                    }
+                } catch (error) {
+                    alert('Error de conexión con el servidor');
+                }
+            } else {
+                alert('Contraseña incorrecta');
+            }
+        });
+
+        function loadDashboard(data) {
+            document.getElementById('admin-stats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${data.stats.totalUsers}</div>
+                    <p>Usuarios Totales</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${data.stats.totalConsumptions}</div>
+                    <p>Consumos Registrados</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${data.stats.totalFoods}</div>
+                    <p>Alimentos en BD</p>
+                </div>
+            `;
+
+            let usersHTML = '';
+            data.recentUsers.forEach(user => {
+                usersHTML += `
+                    <div class="user-card">
+                        <p><strong>${user.name}</strong> (${user.diabetesType})</p>
+                        <p>${user.email}</p>
+                        <small>Registrado: ${new Date(user.createdAt).toLocaleDateString()}</small>
+                    </div>
+                `;
+            });
+            document.getElementById('recent-users').innerHTML = usersHTML;
+        }
+
+        document.getElementById('add-food-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const foodData = {
+                name: document.getElementById('food-name').value,
+                carbohydrates: parseFloat(document.getElementById('food-carbs').value),
+                sugars: parseFloat(document.getElementById('food-sugars').value),
+                glycemicIndex: parseInt(document.getElementById('food-gi').value) || null,
+                calories: parseInt(document.getElementById('food-calories').value) || null,
+                category: document.getElementById('food-category').value,
+                password: ADMIN_PASSWORD
+            };
+
+            try {
+                const response = await fetch('/api/admin/add-food', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(foodData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Alimento agregado exitosamente');
+                    document.getElementById('add-food-form').reset();
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                alert('Error agregando alimento');
+            }
+        });
+
+        function logout() {
+            document.getElementById('admin-login').style.display = 'block';
+            document.getElementById('admin-dashboard').style.display = 'none';
+            document.getElementById('admin-password').value = '';
+        }
+    </script>
+
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .admin-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .admin-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .admin-section h3 {
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+
+        .admin-section input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+        }
+
+        .user-card {
+            background: #f7fafc;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .admin-sections {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

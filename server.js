@@ -18,17 +18,28 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/carbochec
   useUnifiedTopology: true
 });
 
-// Rutas
+// Rutas API
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/foods', require('./routes/foods'));
 app.use('/api/admin', require('./routes/admin'));
 
-// Servir archivos estáticos
+// Rutas específicas
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Catch all para SPA
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, () => {
-  console.log(`CarboCheck server running on port ${PORT}`);
+  console.log(`🏥 CarboCheck server running on port ${PORT}`);
+  console.log(`👥 Usuarios: http://localhost:${PORT}`);
+  console.log(`👨‍💼 Admin: http://localhost:${PORT}/admin`);
 });
