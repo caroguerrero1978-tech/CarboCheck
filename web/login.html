@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarboCheck - Iniciar Sesión</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #27ae60, #2c3e50); min-height: 100vh; }
+        .container { max-width: 400px; margin: 0 auto; padding: 20px; display: flex; align-items: center; min-height: 100vh; }
+        .login-form { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 100%; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .title { font-size: 2.2em; color: #2c3e50; margin-bottom: 10px; }
+        .subtitle { color: #7f8c8d; font-size: 1.1em; }
+        .input-group { margin-bottom: 20px; }
+        .input { width: 100%; padding: 15px; border: 2px solid #ecf0f1; border-radius: 8px; font-size: 16px; }
+        .input:focus { outline: none; border-color: #27ae60; }
+        .btn { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin: 10px 0; }
+        .btn:hover { background: #229954; }
+        .btn-google { background: #db4437; }
+        .btn-apple { background: #000; }
+        .divider { text-align: center; margin: 20px 0; color: #7f8c8d; }
+        .register-link { text-align: center; margin-top: 20px; }
+        .register-link a { color: #27ae60; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-form">
+            <div class="header">
+                <h1 class="title">📱 CarboCheck</h1>
+                <p class="subtitle">Bienvenido de vuelta</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <input type="email" class="input" placeholder="Correo electrónico" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" class="input" placeholder="Contraseña" required>
+                </div>
+
+                <button type="submit" class="btn">🔓 Iniciar Sesión</button>
+            </form>
+
+            <div class="divider">── O continuar con ──</div>
+
+            <button class="btn btn-google">🔴 Google</button>
+            <button class="btn btn-apple">🍎 Apple</button>
+
+            <div class="register-link">
+                ¿No tienes cuenta? <a href="register.html">Registrarse</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Inicio de sesión exitoso');
+            window.location.href = 'dashboard.html';
+        });
+    </script>
+</body>
+</html>

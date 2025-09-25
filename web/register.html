@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarboCheck - Registro de Usuario</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #3498db, #2c3e50); min-height: 100vh; }
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; display: flex; align-items: center; min-height: 100vh; }
+        .register-form { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 100%; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .title { font-size: 2.2em; color: #2c3e50; margin-bottom: 10px; }
+        .subtitle { color: #7f8c8d; font-size: 1.1em; margin-bottom: 20px; }
+        .input-group { margin-bottom: 20px; }
+        .input { width: 100%; padding: 15px; border: 2px solid #ecf0f1; border-radius: 8px; font-size: 16px; transition: border-color 0.3s; }
+        .input:focus { outline: none; border-color: #3498db; }
+        .select { width: 100%; padding: 15px; border: 2px solid #ecf0f1; border-radius: 8px; font-size: 16px; background: white; }
+        .btn { width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.3s; margin: 10px 0; }
+        .btn:hover { background: #2980b9; }
+        .btn-google { background: #db4437; }
+        .btn-google:hover { background: #c23321; }
+        .btn-apple { background: #000; }
+        .btn-apple:hover { background: #333; }
+        .divider { text-align: center; margin: 20px 0; color: #7f8c8d; }
+        .login-link { text-align: center; margin-top: 20px; }
+        .login-link a { color: #3498db; text-decoration: none; }
+        .success { background: #27ae60; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="register-form">
+            <div class="header">
+                <h1 class="title">📱 CarboCheck</h1>
+                <p class="subtitle">Únete a la comunidad de diabéticos que gestionan su salud inteligentemente</p>
+            </div>
+
+            <div id="successMessage" class="success">
+                ✅ ¡Registro exitoso! Bienvenido a CarboCheck
+            </div>
+
+            <form id="registerForm">
+                <div class="input-group">
+                    <input type="text" class="input" placeholder="Nombre completo" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" class="input" placeholder="Correo electrónico" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" class="input" placeholder="Contraseña" required>
+                </div>
+                <div class="input-group">
+                    <select class="select" required>
+                        <option value="">Tipo de diabetes</option>
+                        <option value="tipo1">Diabetes Tipo 1</option>
+                        <option value="tipo2">Diabetes Tipo 2</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <input type="number" class="input" placeholder="Edad" min="1" max="120" required>
+                </div>
+                <div class="input-group">
+                    <input type="number" class="input" placeholder="Peso (kg)" min="20" max="300" step="0.1" required>
+                </div>
+
+                <button type="submit" class="btn">🚀 Crear Cuenta</button>
+            </form>
+
+            <div class="divider">── O registrarse con ──</div>
+
+            <button class="btn btn-google" onclick="registerWithGoogle()">🔴 Continuar con Google</button>
+            <button class="btn btn-apple" onclick="registerWithApple()">🍎 Continuar con Apple</button>
+
+            <div class="login-link">
+                ¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simular registro exitoso
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Redirigir después de 2 segundos
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 2000);
+        });
+
+        function registerWithGoogle() {
+            alert('Registro con Google - Funcionalidad en desarrollo');
+            // Aquí iría la integración con Google OAuth
+        }
+
+        function registerWithApple() {
+            alert('Registro con Apple - Funcionalidad en desarrollo');
+            // Aquí iría la integración con Apple Sign In
+        }
+    </script>
+</body>
+</html>
