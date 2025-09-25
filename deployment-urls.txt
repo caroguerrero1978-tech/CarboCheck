@@ -1,0 +1,2 @@
+http://carbocheck-web-app-1758840175.s3-website-us-east-1.amazonaws.com
+http://carbocheck-web-app-1758840175.s3-website-us-east-1.amazonaws.com/admin.html
