@@ -139,15 +139,35 @@
             document.getElementById('calories').textContent = data.calories;
             document.getElementById('gi').textContent = data.glycemicIndex;
             
-            // Mostrar clasificación
+            // Mostrar clasificación con riesgo
             const classification = document.getElementById('classification');
             const classText = document.getElementById('classificationText');
             
-            classText.textContent = `${data.glycemicClassification.emoji} ${data.glycemicClassification.level} IG - ${data.glycemicClassification.recommendation}`;
+            // Determinar nivel de riesgo
+            let riskLevel = "";
+            if (data.glycemicIndex <= 55) {
+                riskLevel = "RIESGO BAJO - Seguro para diabéticos";
+            } else if (data.glycemicIndex <= 70) {
+                riskLevel = "RIESGO MODERADO - Consumir con precaución";
+            } else {
+                riskLevel = "RIESGO ALTO - Evitar o consumir muy poco";
+            }
+            
+            classText.textContent = `${data.glycemicClassification.emoji} ${riskLevel}`;
             classification.className = `classification ${data.glycemicClassification.color}`;
             
-            // Mostrar JSON completo
-            document.getElementById('jsonOutput').textContent = JSON.stringify(data, null, 2);
+            // Mostrar JSON simplificado (sin mostrar el JSON completo)
+            const simplifiedData = {
+                alimento: data.foodName,
+                carbohidratos: `${data.carbohydrates}g`,
+                azucares: `${data.sugars}g`,
+                calorias: data.calories,
+                indiceGlucemico: data.glycemicIndex,
+                nivelRiesgo: riskLevel,
+                recomendacion: data.glycemicClassification.recommendation
+            };
+            
+            document.getElementById('jsonOutput').textContent = JSON.stringify(simplifiedData, null, 2);
         }
 
         // Simular llamada real a la API
