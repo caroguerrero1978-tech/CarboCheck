@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarboCheck - Demo Análisis Nutricional</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .title { font-size: 2.5em; color: #2c3e50; margin-bottom: 10px; }
+        .demo-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .food-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .food-item { background: #ecf0f1; padding: 15px; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+        .food-item:hover { background: #3498db; color: white; transform: translateY(-2px); }
+        .nutrition-display { background: #2c3e50; color: white; padding: 20px; border-radius: 10px; margin-top: 20px; }
+        .nutrition-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }
+        .nutrition-item { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; text-align: center; }
+        .nutrition-value { font-size: 1.5em; font-weight: bold; color: #3498db; }
+        .nutrition-label { font-size: 0.9em; opacity: 0.8; }
+        .gi-indicator { display: inline-block; padding: 5px 10px; border-radius: 15px; font-size: 0.8em; font-weight: bold; }
+        .gi-low { background: #27ae60; color: white; }
+        .gi-medium { background: #f39c12; color: white; }
+        .gi-high { background: #e74c3c; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">📱 CarboCheck</h1>
+            <p>Demo de Análisis Nutricional Preciso</p>
+        </div>
+
+        <div class="demo-card">
+            <h3>🔬 Base de Datos Nutricional</h3>
+            <p>Datos precisos basados en USDA Food Database + International Glycemic Index Database</p>
+            
+            <div class="food-grid">
+                <div class="food-item" onclick="showNutrition('manzana')">🍎 Manzana</div>
+                <div class="food-item" onclick="showNutrition('banana')">🍌 Banana</div>
+                <div class="food-item" onclick="showNutrition('pan')">🍞 Pan Blanco</div>
+                <div class="food-item" onclick="showNutrition('arroz')">🍚 Arroz Blanco</div>
+                <div class="food-item" onclick="showNutrition('pasta')">🍝 Pasta</div>
+                <div class="food-item" onclick="showNutrition('papa')">🥔 Papa</div>
+                <div class="food-item" onclick="showNutrition('avena')">🥣 Avena</div>
+                <div class="food-item" onclick="showNutrition('quinoa')">🌾 Quinoa</div>
+            </div>
+
+            <div id="nutritionDisplay" class="nutrition-display" style="display: none;">
+                <h4 id="foodName">Información Nutricional</h4>
+                <p style="opacity: 0.8; margin-bottom: 15px;">Por 100 gramos</p>
+                
+                <div class="nutrition-grid">
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="carbs">0g</div>
+                        <div class="nutrition-label">Carbohidratos</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="sugars">0g</div>
+                        <div class="nutrition-label">Azúcares</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="fiber">0g</div>
+                        <div class="nutrition-label">Fibra</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="calories">0</div>
+                        <div class="nutrition-label">Calorías</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="protein">0g</div>
+                        <div class="nutrition-label">Proteína</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="gi">0</div>
+                        <div class="nutrition-label">Índice Glucémico</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px; text-align: center;">
+                    <span id="giIndicator" class="gi-indicator">Bajo IG</span>
+                    <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.7;">Fuente: USDA + International GI Database</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const nutritionData = {
+            'manzana': { name: 'Manzana', carbs: 14.0, sugars: 10.4, gi: 36, fiber: 2.4, calories: 52, protein: 0.3 },
+            'banana': { name: 'Banana', carbs: 23.0, sugars: 12.2, gi: 51, fiber: 2.6, calories: 89, protein: 1.1 },
+            'pan': { name: 'Pan Blanco', carbs: 49.0, sugars: 5.0, gi: 75, fiber: 2.7, calories: 265, protein: 9.0 },
+            'arroz': { name: 'Arroz Blanco', carbs: 28.0, sugars: 0.1, gi: 73, fiber: 0.4, calories: 130, protein: 2.7 },
+            'pasta': { name: 'Pasta', carbs: 25.0, sugars: 0.6, gi: 49, fiber: 1.8, calories: 131, protein: 5.0 },
+            'papa': { name: 'Papa', carbs: 17.0, sugars: 0.8, gi: 78, fiber: 2.2, calories: 77, protein: 2.0 },
+            'avena': { name: 'Avena', carbs: 66.0, sugars: 0.9, gi: 55, fiber: 10.6, calories: 389, protein: 16.9 },
+            'quinoa': { name: 'Quinoa', carbs: 64.0, sugars: 4.6, gi: 53, fiber: 7.0, calories: 368, protein: 14.1 }
+        };
+
+        function showNutrition(food) {
+            const data = nutritionData[food];
+            if (!data) return;
+
+            document.getElementById('foodName').textContent = `🔬 ${data.name}`;
+            document.getElementById('carbs').textContent = `${data.carbs}g`;
+            document.getElementById('sugars').textContent = `${data.sugars}g`;
+            document.getElementById('fiber').textContent = `${data.fiber}g`;
+            document.getElementById('calories').textContent = data.calories;
+            document.getElementById('protein').textContent = `${data.protein}g`;
+            document.getElementById('gi').textContent = data.gi;
+
+            // Clasificar índice glucémico
+            const giIndicator = document.getElementById('giIndicator');
+            if (data.gi <= 55) {
+                giIndicator.textContent = 'Bajo IG';
+                giIndicator.className = 'gi-indicator gi-low';
+            } else if (data.gi <= 70) {
+                giIndicator.textContent = 'Medio IG';
+                giIndicator.className = 'gi-indicator gi-medium';
+            } else {
+                giIndicator.textContent = 'Alto IG';
+                giIndicator.className = 'gi-indicator gi-high';
+            }
+
+            document.getElementById('nutritionDisplay').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
