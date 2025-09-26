@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarboCheck - Dashboard Usuario</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .header { background: #2c3e50; color: white; padding: 20px; text-align: center; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .scan-area { border: 3px dashed #3498db; padding: 40px; text-align: center; border-radius: 10px; cursor: pointer; }
+        .scan-area:hover { background: #ecf0f1; }
+        .btn { background: #3498db; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin: 10px; }
+        .btn:hover { background: #2980b9; }
+        .results { background: #2c3e50; color: white; padding: 20px; border-radius: 10px; margin-top: 20px; display: none; }
+        .nutrition-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        .nutrition-item { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; text-align: center; }
+        .nutrition-value { font-size: 1.5em; font-weight: bold; color: #3498db; }
+        .nutrition-label { font-size: 0.9em; opacity: 0.8; }
+        .gi-indicator { display: inline-block; padding: 8px 15px; border-radius: 20px; font-weight: bold; margin: 10px 0; }
+        .gi-low { background: #27ae60; }
+        .gi-medium { background: #f39c12; }
+        .gi-high { background: #e74c3c; }
+        .history { max-height: 300px; overflow-y: auto; }
+        .history-item { background: #ecf0f1; padding: 15px; border-radius: 8px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📱 CarboCheck - Dashboard</h1>
+        <p>Bienvenido, <span id="userName">Usuario</span> | <a href="index.html" style="color: #3498db;">Cerrar Sesión</a></p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>📷 Escanear Alimento</h2>
+            <div class="scan-area" onclick="document.getElementById('imageInput').click()">
+                <p>📱 Toca para tomar foto o subir imagen</p>
+                <p style="font-size: 0.9em; opacity: 0.7; margin-top: 10px;">Análisis nutricional preciso en segundos</p>
+            </div>
+            
+            <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="scanFood()">
+            
+            <div style="text-align: center;">
+                <button class="btn" onclick="simulateFood('banana')">🍌 Demo Banana</button>
+                <button class="btn" onclick="simulateFood('manzana')">🍎 Demo Manzana</button>
+                <button class="btn" onclick="simulateFood('pan')">🍞 Demo Pan</button>
+            </div>
+
+            <div id="results" class="results">
+                <h3 id="foodName">Analizando...</h3>
+                <p style="opacity: 0.8; margin-bottom: 15px;">Información nutricional por 100 gramos</p>
+                
+                <div class="nutrition-grid">
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="carbs">0g</div>
+                        <div class="nutrition-label">Carbohidratos</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="sugars">0g</div>
+                        <div class="nutrition-label">Azúcares</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="calories">0</div>
+                        <div class="nutrition-label">Calorías</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="gi">0</div>
+                        <div class="nutrition-label">Índice Glucémico</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <span id="giIndicator" class="gi-indicator">Clasificación IG</span>
+                    <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.7;">
+                        Fuente: USDA + International Glycemic Index Database
+                    </p>
+                    <button class="btn" onclick="saveToHistory()" id="saveBtn" style="display: none;">💾 Guardar en Historial</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📊 Historial de Análisis</h2>
+            <div id="history" class="history">
+                <p style="text-align: center; opacity: 0.7;">No hay análisis guardados aún</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAnalysis = null;
+        let analysisHistory = JSON.parse(localStorage.getItem('carbocheck_history') || '[]');
+
+        // Cargar nombre de usuario
+        document.getElementById('userName').textContent = localStorage.getItem('carbocheck_user') || 'Usuario';
+
+        // Registrar login
+        registerUserLogin();
+
+        const nutritionDatabase = {
+            banana: {
+                name: "🍌 Banana",
+                carbohydrates: 23.0,
+                sugars: 12.2,
+                calories: 89,
+                glycemicIndex: 51
+            },
+            manzana: {
+                name: "🍎 Manzana", 
+                carbohydrates: 14.0,
+                sugars: 10.4,
+                calories: 52,
+                glycemicIndex: 36
+            },
+            pan: {
+                name: "🍞 Pan Blanco",
+                carbohydrates: 49.0,
+                sugars: 5.0,
+                calories: 265,
+                glycemicIndex: 75
+            }
+        };
+
+        function scanFood() {
+            const file = document.getElementById('imageInput').files[0];
+            if (file) {
+                document.getElementById('results').style.display = 'block';
+                document.getElementById('foodName').textContent = 'Analizando imagen...';
+                
+                // Simular análisis con API real
+                setTimeout(() => {
+                    const foods = ['banana', 'manzana', 'pan'];
+                    const randomFood = foods[Math.floor(Math.random() * foods.length)];
+                    displayResults(nutritionDatabase[randomFood]);
+                }, 2000);
+            }
+        }
+
+        function simulateFood(foodType) {
+            displayResults(nutritionDatabase[foodType]);
+        }
+
+        function displayResults(data) {
+            currentAnalysis = data;
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('foodName').textContent = data.name;
+            document.getElementById('carbs').textContent = data.carbohydrates + 'g';
+            document.getElementById('sugars').textContent = data.sugars + 'g';
+            document.getElementById('calories').textContent = data.calories;
+            document.getElementById('gi').textContent = data.glycemicIndex;
+
+            // Clasificar índice glucémico
+            const giIndicator = document.getElementById('giIndicator');
+            if (data.glycemicIndex <= 55) {
+                giIndicator.textContent = '🟢 Bajo IG - Ideal para diabéticos';
+                giIndicator.className = 'gi-indicator gi-low';
+            } else if (data.glycemicIndex <= 70) {
+                giIndicator.textContent = '🟡 Medio IG - Consumo moderado';
+                giIndicator.className = 'gi-indicator gi-medium';
+            } else {
+                giIndicator.textContent = '🔴 Alto IG - Precaución';
+                giIndicator.className = 'gi-indicator gi-high';
+            }
+
+            document.getElementById('saveBtn').style.display = 'inline-block';
+        }
+
+        function saveToHistory() {
+            if (currentAnalysis) {
+                const historyItem = {
+                    ...currentAnalysis,
+                    timestamp: new Date().toLocaleString(),
+                    id: Date.now()
+                };
+                
+                analysisHistory.unshift(historyItem);
+                localStorage.setItem('carbocheck_history', JSON.stringify(analysisHistory));
+                updateHistoryDisplay();
+                
+                alert('✅ Análisis guardado en el historial');
+            }
+        }
+
+        function updateHistoryDisplay() {
+            const historyDiv = document.getElementById('history');
+            
+            if (analysisHistory.length === 0) {
+                historyDiv.innerHTML = '<p style="text-align: center; opacity: 0.7;">No hay análisis guardados aún</p>';
+                return;
+            }
+
+            historyDiv.innerHTML = analysisHistory.map(item => `
+                <div class="history-item">
+                    <div>
+                        <strong>${item.name}</strong><br>
+                        <small>${item.timestamp}</small>
+                    </div>
+                    <div style="text-align: right;">
+                        <div>Carbs: ${item.carbohydrates}g | IG: ${item.glycemicIndex}</div>
+                        <div style="font-size: 0.8em; opacity: 0.7;">${item.calories} cal</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function registerUserLogin() {
+            // Registrar login para estadísticas de admin
+            const loginData = {
+                user: localStorage.getItem('carbocheck_user') || 'Usuario',
+                timestamp: new Date().toISOString(),
+                sessionId: Date.now()
+            };
+            
+            let logins = JSON.parse(localStorage.getItem('carbocheck_logins') || '[]');
+            logins.push(loginData);
+            localStorage.setItem('carbocheck_logins', JSON.stringify(logins));
+        }
+
+        // Cargar historial al iniciar
+        updateHistoryDisplay();
+    </script>
+</body>
+</html>

@@ -42,26 +42,26 @@
 
             <form id="registerForm">
                 <div class="input-group">
-                    <input type="text" class="input" placeholder="Nombre completo" required>
+                    <input type="text" name="name" class="input" placeholder="Nombre completo" required>
                 </div>
                 <div class="input-group">
-                    <input type="email" class="input" placeholder="Correo electrónico" required>
+                    <input type="email" name="email" class="input" placeholder="Correo electrónico" required>
                 </div>
                 <div class="input-group">
-                    <input type="password" class="input" placeholder="Contraseña" required>
+                    <input type="password" name="password" class="input" placeholder="Contraseña" required>
                 </div>
                 <div class="input-group">
-                    <select class="select" required>
+                    <select name="diabetesType" class="select" required>
                         <option value="">Tipo de diabetes</option>
                         <option value="tipo1">Diabetes Tipo 1</option>
                         <option value="tipo2">Diabetes Tipo 2</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <input type="number" class="input" placeholder="Edad" min="1" max="120" required>
+                    <input type="number" name="age" class="input" placeholder="Edad" min="1" max="120" required>
                 </div>
                 <div class="input-group">
-                    <input type="number" class="input" placeholder="Peso (kg)" min="20" max="300" step="0.1" required>
+                    <input type="number" name="weight" class="input" placeholder="Peso (kg)" min="20" max="300" step="0.1" required>
                 </div>
 
                 <button type="submit" class="btn">🚀 Crear Cuenta</button>
@@ -82,10 +82,28 @@
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Simular registro exitoso
+            // Obtener datos del formulario
+            const formData = new FormData(e.target);
+            const userData = {
+                name: formData.get('name') || e.target.querySelector('input[placeholder="Nombre completo"]').value,
+                email: formData.get('email') || e.target.querySelector('input[placeholder="Correo electrónico"]').value,
+                diabetesType: formData.get('diabetesType') || e.target.querySelector('select').value,
+                age: formData.get('age') || e.target.querySelector('input[placeholder="Edad"]').value,
+                weight: formData.get('weight') || e.target.querySelector('input[placeholder="Peso (kg)"]').value,
+                registrationDate: new Date().toISOString(),
+                id: Date.now()
+            };
+            
+            // Guardar usuario
+            let users = JSON.parse(localStorage.getItem('carbocheck_users') || '[]');
+            users.push(userData);
+            localStorage.setItem('carbocheck_users', JSON.stringify(users));
+            localStorage.setItem('carbocheck_user', userData.name);
+            
+            // Mostrar mensaje de éxito
             document.getElementById('successMessage').style.display = 'block';
             
-            // Redirigir después de 2 segundos
+            // Redirigir al dashboard
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
             }, 2000);
