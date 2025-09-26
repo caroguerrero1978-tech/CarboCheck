@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarboCheck - Test de Escaneo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .scan-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .title { font-size: 2em; color: #2c3e50; margin-bottom: 20px; text-align: center; }
+        .upload-area { border: 3px dashed #3498db; padding: 40px; text-align: center; border-radius: 10px; margin-bottom: 20px; cursor: pointer; }
+        .upload-area:hover { background: #ecf0f1; }
+        .btn { background: #3498db; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin: 10px; }
+        .btn:hover { background: #2980b9; }
+        .results { background: #2c3e50; color: white; padding: 20px; border-radius: 10px; margin-top: 20px; display: none; }
+        .nutrition-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
+        .nutrition-item { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; text-align: center; }
+        .nutrition-value { font-size: 1.5em; font-weight: bold; color: #3498db; }
+        .nutrition-label { font-size: 0.9em; opacity: 0.8; }
+        .gi-indicator { display: inline-block; padding: 8px 15px; border-radius: 20px; font-weight: bold; margin-top: 10px; }
+        .gi-low { background: #27ae60; }
+        .gi-medium { background: #f39c12; }
+        .gi-high { background: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="scan-card">
+            <h1 class="title">📱 CarboCheck - Test de Escaneo</h1>
+            
+            <div class="upload-area" onclick="document.getElementById('imageInput').click()">
+                <p>📷 Haz clic para subir imagen de alimento</p>
+                <p style="font-size: 0.9em; opacity: 0.7; margin-top: 10px;">O arrastra y suelta aquí</p>
+            </div>
+            
+            <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="scanFood()">
+            
+            <div style="text-align: center;">
+                <button class="btn" onclick="simulateBanana()">🍌 Simular Banana</button>
+                <button class="btn" onclick="simulateApple()">🍎 Simular Manzana</button>
+                <button class="btn" onclick="simulateBread()">🍞 Simular Pan</button>
+            </div>
+
+            <div id="results" class="results">
+                <h3 id="foodName">Analizando...</h3>
+                <p style="opacity: 0.8; margin-bottom: 15px;">Información nutricional por 100 gramos</p>
+                
+                <div class="nutrition-grid">
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="carbs">0g</div>
+                        <div class="nutrition-label">Carbohidratos</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="sugars">0g</div>
+                        <div class="nutrition-label">Azúcares</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="calories">0</div>
+                        <div class="nutrition-label">Calorías</div>
+                    </div>
+                    <div class="nutrition-item">
+                        <div class="nutrition-value" id="gi">0</div>
+                        <div class="nutrition-label">Índice Glucémico</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <span id="giIndicator" class="gi-indicator">Clasificación IG</span>
+                    <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.7;">
+                        Fuente: USDA + International Glycemic Index Database
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const nutritionDatabase = {
+            banana: {
+                name: "🍌 Banana",
+                carbohydrates: 23.0,
+                sugars: 12.2,
+                calories: 89,
+                glycemicIndex: 51
+            },
+            manzana: {
+                name: "🍎 Manzana", 
+                carbohydrates: 14.0,
+                sugars: 10.4,
+                calories: 52,
+                glycemicIndex: 36
+            },
+            pan: {
+                name: "🍞 Pan Blanco",
+                carbohydrates: 49.0,
+                sugars: 5.0,
+                calories: 265,
+                glycemicIndex: 75
+            }
+        };
+
+        function scanFood() {
+            const file = document.getElementById('imageInput').files[0];
+            if (file) {
+                // Simular análisis
+                setTimeout(() => {
+                    const foods = ['banana', 'manzana', 'pan'];
+                    const randomFood = foods[Math.floor(Math.random() * foods.length)];
+                    displayResults(nutritionDatabase[randomFood]);
+                }, 1500);
+                
+                document.getElementById('results').style.display = 'block';
+                document.getElementById('foodName').textContent = 'Analizando imagen...';
+            }
+        }
+
+        function simulateBanana() {
+            displayResults(nutritionDatabase.banana);
+        }
+
+        function simulateApple() {
+            displayResults(nutritionDatabase.manzana);
+        }
+
+        function simulateBread() {
+            displayResults(nutritionDatabase.pan);
+        }
+
+        function displayResults(data) {
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('foodName').textContent = data.name;
+            document.getElementById('carbs').textContent = data.carbohydrates + 'g';
+            document.getElementById('sugars').textContent = data.sugars + 'g';
+            document.getElementById('calories').textContent = data.calories;
+            document.getElementById('gi').textContent = data.glycemicIndex;
+
+            // Clasificar índice glucémico
+            const giIndicator = document.getElementById('giIndicator');
+            if (data.glycemicIndex <= 55) {
+                giIndicator.textContent = 'Bajo IG - Ideal';
+                giIndicator.className = 'gi-indicator gi-low';
+            } else if (data.glycemicIndex <= 70) {
+                giIndicator.textContent = 'Medio IG - Moderado';
+                giIndicator.className = 'gi-indicator gi-medium';
+            } else {
+                giIndicator.textContent = 'Alto IG - Precaución';
+                giIndicator.className = 'gi-indicator gi-high';
+            }
+        }
+    </script>
+</body>
+</html>
